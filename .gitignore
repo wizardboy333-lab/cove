@@ -1,0 +1,51 @@
+# Node / Next
+node_modules/
+.next/
+out/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts.bak
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+!.env*.example
+
+# Databases / local data
+*.db
+*.sqlite
+*.sqlite3
+cove.db
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Logs & coverage
+*.log
+coverage/
+.nyc_output/
+dist/
+build/
+
+# Docker
+*.pid
+
+# Invite seed output (local)
+**/seed_invites.out.txt

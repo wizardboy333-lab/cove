@@ -1,0 +1,35 @@
+# Cove local stack stub — optional. Uncomment/adjust when ready.
+# Usage: docker compose up
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: cove
+      POSTGRES_PASSWORD: cove
+      POSTGRES_DB: cove
+    ports:
+      - "5432:5432"
+    volumes:
+      - cove_pg:/var/lib/postgresql/data
+
+  # api:
+  #   build: ./api
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     DATABASE_URL: postgresql+psycopg://cove:cove@postgres:5432/cove
+  #   depends_on:
+  #     - postgres
+
+  # web:
+  #   build: ./web
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     NEXT_PUBLIC_API_URL: http://localhost:8000
+  #   depends_on:
+  #     - api
+
+volumes:
+  cove_pg:

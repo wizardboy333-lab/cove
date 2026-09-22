@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+:root {
+  /* CRT phosphor — near-black chassis */
+  --cove-ink: #0a0f0a;
+  --cove-surface: #0e1610;
+  --cove-surface-elevated: #142018;
+  --cove-border: #1a3d24;
+  /* Phosphor green text */
+  --cove-mist: #33ff66;
+  --cove-mist-dim: #1fa84a;
+  /* Hot magenta accent */
+  --cove-accent: #ff2bd6;
+  --cove-accent-hover: #ff5ae0;
+  /* Secondary phosphor / cyan-green */
+  --cove-teal: #22dd88;
+  --cove-teal-soft: rgba(51, 255, 102, 0.1);
+  --cove-glow-warm: rgba(255, 43, 214, 0.12);
+  --cove-glow-teal: rgba(51, 255, 102, 0.08);
+  --cove-scanline: rgba(0, 0, 0, 0.28);
+}
+
+@theme inline {
+  --color-cove-ink: var(--cove-ink);
+  --color-cove-surface: var(--cove-surface);
+  --color-cove-surface-elevated: var(--cove-surface-elevated);
+  --color-cove-border: var(--cove-border);
+  --color-cove-mist: var(--cove-mist);
+  --color-cove-mist-dim: var(--cove-mist-dim);
+  --color-cove-accent: var(--cove-accent);
+  --color-cove-accent-hover: var(--cove-accent-hover);
+  --color-cove-teal: var(--cove-teal);
+  --color-background: var(--cove-ink);
+  --color-foreground: var(--cove-mist);
+  --font-sans: var(--font-cove-body), ui-monospace, monospace;
+  --font-display: var(--font-cove-display), ui-monospace, monospace;
+  --font-mono: var(--font-cove-mono), ui-monospace, monospace;
+  --font-pixel: var(--font-cove-pixel), ui-monospace, monospace;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--cove-ink);
+  color: var(--cove-mist);
+  font-family: var(--font-cove-body), ui-monospace, monospace;
+  min-height: 100%;
+  letter-spacing: 0.02em;
+  text-shadow: 0 0 1px color-mix(in srgb, var(--cove-mist) 35%, transparent);
+}
+
+/* CRT glow + vignette */
+.cove-glow {
+  position: relative;
+  background-color: var(--cove-ink);
+  background-image:
+    radial-gradient(ellipse 90% 70% at 50% 40%, transparent 40%, rgba(0, 0, 0, 0.55) 100%),
+    radial-gradient(ellipse 60% 45% at 50% -10%, var(--cove-glow-warm), transparent 70%),
+    radial-gradient(ellipse 45% 35% at 100% 0%, var(--cove-glow-teal), transparent 65%);
+}
+
+/* Scanlines + subtle noise */
+.cove-glow::before,
+.cove-grain::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  opacity: 0.55;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      var(--cove-scanline) 2px,
+      var(--cove-scanline) 3px
+    );
+  mix-blend-mode: multiply;
+}
+
+.cove-glow::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 51;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 160px 160px;
+}
+
+/* Display — VT323 CRT terminal */
+.font-display {
+  font-family: var(--font-cove-display), ui-monospace, monospace;
+  letter-spacing: 0.04em;
+  text-shadow:
+    0 0 6px color-mix(in srgb, var(--cove-mist) 45%, transparent),
+    0 0 1px var(--cove-mist);
+}
+
+/* Pixel labels — Press Start 2P (keep small) */
+.cove-label {
+  font-family: var(--font-cove-pixel), ui-monospace, monospace;
+  font-size: 0.55rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cove-accent);
+  text-shadow: 0 0 8px color-mix(in srgb, var(--cove-accent) 50%, transparent);
+}
+
+.cove-label-muted {
+  font-family: var(--font-cove-pixel), ui-monospace, monospace;
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cove-mist-dim);
+}
+
+/* Hard-edge CRT panel — no glass blur */
+.cove-card {
+  border: 2px solid var(--cove-border);
+  background: var(--cove-surface);
+  border-radius: 0;
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--cove-mist) 8%, transparent),
+    0 0 12px color-mix(in srgb, var(--cove-mist) 6%, transparent);
+}
+
+/* Pixel graphics */
+.pixelated,
+img[src*="/graphics/"] {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--cove-accent) 55%, transparent);
+  color: #fff;
+}
+
+/* Outset / inset chrome helpers */
+.cove-btn-outset {
+  border-style: solid;
+  border-width: 2px;
+  border-color: color-mix(in srgb, var(--cove-mist) 55%, #fff)
+    color-mix(in srgb, var(--cove-mist) 20%, #000)
+    color-mix(in srgb, var(--cove-mist) 20%, #000)
+    color-mix(in srgb, var(--cove-mist) 55%, #fff);
+}
+
+.cove-btn-inset {
+  border-style: solid;
+  border-width: 2px;
+  border-color: color-mix(in srgb, var(--cove-mist) 20%, #000)
+    color-mix(in srgb, var(--cove-mist) 45%, #fff)
+    color-mix(in srgb, var(--cove-mist) 45%, #fff)
+    color-mix(in srgb, var(--cove-mist) 20%, #000);
+}
