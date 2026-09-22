@@ -9,6 +9,7 @@ import { AdminBadge } from "./AdminBadge";
 const links = [
   { href: "/home", label: "Home" },
   { href: "/groups", label: "Groups" },
+  { href: "/events", label: "Events" },
   { href: "/writings", label: "Writings" },
   { href: "/profile", label: "Profile" },
 ];

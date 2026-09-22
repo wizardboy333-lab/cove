@@ -60,3 +60,42 @@ export type Topic = {
   locked: boolean;
   createdAt: string;
 };
+
+export type PlaceMode = "metro" | "virtual";
+export type RsvpStatus = "going" | "interested" | "declined";
+export type AttendeeListVisibility = "public" | "going_only" | "host_only";
+
+export type EventRsvp = {
+  id: string;
+  eventId: string;
+  userId: string;
+  status: RsvpStatus | string;
+  showOnList: boolean;
+  createdAt: string;
+};
+
+export type Event = {
+  id: string;
+  hostId: string;
+  hostDisplayName?: string;
+  title: string;
+  description: string;
+  startsAt: string;
+  endsAt?: string;
+  timezone: string;
+  placeMode: PlaceMode | string;
+  metroArea?: string;
+  virtualUrl?: string | null;
+  attendeeListVisibility: AttendeeListVisibility | string;
+  capacity?: number | null;
+  cancelled: boolean;
+  createdAt: string;
+  goingCount?: number;
+  myRsvp?: EventRsvp | null;
+};
+
+export type EventAttendee = {
+  userId: string;
+  displayName: string;
+  status: RsvpStatus | string;
+};

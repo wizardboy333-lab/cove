@@ -312,34 +312,36 @@ Assume: solo or 2–3 people + AI. Working title Cove. Cut ruthlessly.
 
 ### Week-by-week
 
-**Days 1–7 — Foundations**  
+Numbered release prompts and status: [`RELEASE_STAGES.md`](./RELEASE_STAGES.md).
+
+**Stage 1 — Days 1–7 — Foundations**  
 Repo, Postgres schema v1, auth, 18+ gate, guidelines accept, profile nickname + bio + metro, deploy preview URL.
 
-**Days 8–14 — Graph & privacy skeleton**  
+**Stage 2 — Days 8–14 — Graph & privacy skeleton**  
 Friend request/accept, follow, block/mute, visibility helper on all reads.
 
-**Days 15–21 — Kinks**  
+**Stage 3 — Days 15–21 — Kinks**  
 Taxonomy seed (curated 150–300 tags, hierarchical), user_kinks UI, profile kinks tab.
 
-**Days 22–35 — Groups forum**  
+**Stage 4 — Days 22–35 — Groups forum**  
 Groups CRUD, members, topics, posts, pin/lock, mod roles, feed integration for group activity.
 
-**Days 36–45 — Writings + feed**  
+**Stage 5 — Days 36–45 — Writings + feed**  
 Markdown writings with tags + visibility; home feed (friends + groups); notifications basic.
 
-**Days 46–55 — Media**  
+**Stage 6 — Days 46–55 — Media**  
 Presigned image upload, blurhash, signed read URLs, attach to profile/writing; blur-until-tap.
 
-**Days 56–65 — Events thin slice**  
+**Stage 7 — Days 56–65 — Events thin slice**  
 Create/RSVP, metro/virtual, attendee privacy, show on explore.
 
-**Days 66–75 — DMs + safety**  
+**Stage 8 — Days 66–75 — DMs + safety**  
 1:1 DMs with new-account friction; report queue; admin suspend; block enforcement everywhere.
 
-**Days 76–83 — Limited search + polish**  
+**Stage 9a — Days 76–83 — Limited search + polish**  
 Search groups/events/writings/kinks; nickname search only for people; mobile UX pass; rate limits.
 
-**Days 84–90 — Soft launch**  
+**Stage 9b — Days 84–90 — Soft launch**  
 Open registration (18+ attestation), seed education groups, moderation playbook drill, backup/restore, legal pages (ToS, Privacy, Guidelines), metrics (signups, reports SLA).
 
 ### Team split suggestion (matches current)

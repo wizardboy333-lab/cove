@@ -319,3 +319,76 @@ class ReportOut(BaseModel):
 class ErrorOut(BaseModel):
     detail: str
     code: str
+
+
+# ── Events ────────────────────────────────────────────────────────────────────
+
+
+class EventCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=240)
+    description: str | None = Field(default=None, max_length=10000)
+    starts_at: datetime
+    ends_at: datetime | None = None
+    timezone: str = Field(default="America/New_York", min_length=1, max_length=64)
+    place_mode: str = Field(min_length=1, max_length=32)
+    metro_area: str | None = Field(default=None, max_length=120)
+    virtual_url: str | None = Field(default=None, max_length=512)
+    attendee_list_visibility: Literal["public", "going_only", "host_only"] = "going_only"
+    capacity: int | None = Field(default=None, ge=1, le=100_000)
+
+
+class EventUpdate(BaseModel):
+    title: str | None = Field(default=None, min_length=1, max_length=240)
+    description: str | None = Field(default=None, max_length=10000)
+    starts_at: datetime | None = None
+    ends_at: datetime | None = None
+    timezone: str | None = Field(default=None, min_length=1, max_length=64)
+    place_mode: str | None = Field(default=None, min_length=1, max_length=32)
+    metro_area: str | None = Field(default=None, max_length=120)
+    virtual_url: str | None = Field(default=None, max_length=512)
+    attendee_list_visibility: Literal["public", "going_only", "host_only"] | None = None
+    capacity: int | None = Field(default=None, ge=1, le=100_000)
+
+
+class RsvpOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    event_id: int
+    user_id: int
+    status: str
+    show_on_list: bool
+    created_at: datetime
+
+
+class EventOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    host_id: int
+    host_display_name: str | None = None
+    title: str
+    description: str | None = None
+    starts_at: datetime
+    ends_at: datetime | None = None
+    timezone: str
+    place_mode: str
+    metro_area: str | None = None
+    virtual_url: str | None = None
+    attendee_list_visibility: str
+    capacity: int | None = None
+    cancelled: bool
+    created_at: datetime
+    going_count: int | None = None
+    my_rsvp: RsvpOut | None = None
+
+
+class RsvpUpsert(BaseModel):
+    status: Literal["going", "interested", "declined"]
+    show_on_list: bool | None = True
+
+
+class AttendeeOut(BaseModel):
+    user_id: int
+    display_name: str
+    status: str

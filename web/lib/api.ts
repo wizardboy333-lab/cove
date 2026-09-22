@@ -1,12 +1,25 @@
 /**
- * API client — live auth + feed / groups / writings / topics against
+ * API client — live auth + feed / groups / events / writings / topics against
  * NEXT_PUBLIC_API_URL. Profile stubs still use mock-data until wired.
  *
  * Base URL: NEXT_PUBLIC_API_URL (default http://127.0.0.1:8001)
  */
 
 import { MOCK_CURRENT_USER, MOCK_USERS } from "./mock-data";
-import type { Group, Post, Topic, User, Writing, WritingVisibility } from "./types";
+import type {
+  AttendeeListVisibility,
+  Event,
+  EventAttendee,
+  EventRsvp,
+  Group,
+  PlaceMode,
+  Post,
+  RsvpStatus,
+  Topic,
+  User,
+  Writing,
+  WritingVisibility,
+} from "./types";
 
 const API_BASE =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") ||
@@ -649,6 +662,199 @@ export async function apiDeleteWriting(id: string): Promise<void> {
   await request<void>(`/api/writings/${encodeURIComponent(id)}`, {
     method: "DELETE",
   });
+}
+
+
+// --- Events (live) ---------------------------------------------------------
+
+type ApiRsvp = {
+  id: number | string;
+  event_id: number | string;
+  user_id: number | string;
+  status: string;
+  show_on_list: boolean;
+  created_at: string;
+};
+
+type ApiEvent = {
+  id: number | string;
+  host_id: number | string;
+  host_display_name?: string | null;
+  title: string;
+  description?: string | null;
+  starts_at: string;
+  ends_at?: string | null;
+  timezone: string;
+  place_mode: string;
+  metro_area?: string | null;
+  virtual_url?: string | null;
+  attendee_list_visibility: string;
+  capacity?: number | null;
+  cancelled: boolean;
+  created_at: string;
+  going_count?: number | null;
+  my_rsvp?: ApiRsvp | null;
+};
+
+type ApiAttendee = {
+  user_id: number | string;
+  display_name: string;
+  status: string;
+};
+
+export function mapApiRsvp(r: ApiRsvp): EventRsvp {
+  return {
+    id: String(r.id),
+    eventId: String(r.event_id),
+    userId: String(r.user_id),
+    status: r.status,
+    showOnList: !!r.show_on_list,
+    createdAt: isoFrom(r.created_at),
+  };
+}
+
+export function mapApiEvent(e: ApiEvent): Event {
+  return {
+    id: String(e.id),
+    hostId: String(e.host_id),
+    hostDisplayName: e.host_display_name ?? undefined,
+    title: e.title,
+    description: e.description ?? "",
+    startsAt: isoFrom(e.starts_at),
+    endsAt: e.ends_at ? isoFrom(e.ends_at) : undefined,
+    timezone: e.timezone,
+    placeMode: e.place_mode,
+    metroArea: e.metro_area ?? undefined,
+    virtualUrl: e.virtual_url ?? null,
+    attendeeListVisibility: e.attendee_list_visibility,
+    capacity: e.capacity ?? null,
+    cancelled: !!e.cancelled,
+    createdAt: isoFrom(e.created_at),
+    goingCount: e.going_count ?? undefined,
+    myRsvp: e.my_rsvp ? mapApiRsvp(e.my_rsvp) : null,
+  };
+}
+
+export function mapApiAttendee(a: ApiAttendee): EventAttendee {
+  return {
+    userId: String(a.user_id),
+    displayName: a.display_name,
+    status: a.status,
+  };
+}
+
+export async function apiListEvents(opts?: {
+  metro?: string;
+}): Promise<Event[]> {
+  const q = opts?.metro?.trim()
+    ? `?metro=${encodeURIComponent(opts.metro.trim())}`
+    : "";
+  const data = await request<ApiEvent[]>(`/api/events${q}`);
+  return data.map(mapApiEvent);
+}
+
+export async function apiGetEvent(id: string): Promise<Event> {
+  const data = await request<ApiEvent>(
+    `/api/events/${encodeURIComponent(id)}`
+  );
+  return mapApiEvent(data);
+}
+
+export async function apiCreateEvent(input: {
+  title: string;
+  description?: string;
+  starts_at: string;
+  ends_at?: string | null;
+  timezone?: string;
+  place_mode: PlaceMode;
+  metro_area?: string;
+  virtual_url?: string;
+  attendee_list_visibility?: AttendeeListVisibility;
+  capacity?: number | null;
+}): Promise<Event> {
+  if (!input.title.trim()) throw new Error("Title is required.");
+  if (!input.starts_at) throw new Error("Start time is required.");
+  if (input.place_mode === "metro" && !input.metro_area?.trim()) {
+    throw new Error("Metro area is required for metro events.");
+  }
+  const body: Record<string, unknown> = {
+    title: input.title.trim(),
+    starts_at: input.starts_at,
+    timezone: input.timezone || "America/New_York",
+    place_mode: input.place_mode,
+    attendee_list_visibility:
+      input.attendee_list_visibility ?? "going_only",
+  };
+  if (input.description?.trim()) body.description = input.description.trim();
+  if (input.ends_at) body.ends_at = input.ends_at;
+  if (input.metro_area?.trim()) body.metro_area = input.metro_area.trim();
+  if (input.virtual_url?.trim()) body.virtual_url = input.virtual_url.trim();
+  if (input.capacity != null && input.capacity > 0) body.capacity = input.capacity;
+  const data = await request<ApiEvent>("/api/events", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+  return mapApiEvent(data);
+}
+
+export async function apiUpdateEvent(
+  id: string,
+  updates: Partial<{
+    title: string;
+    description: string;
+    starts_at: string;
+    ends_at: string | null;
+    timezone: string;
+    place_mode: PlaceMode;
+    metro_area: string;
+    virtual_url: string;
+    attendee_list_visibility: AttendeeListVisibility;
+    capacity: number | null;
+  }>
+): Promise<Event> {
+  const data = await request<ApiEvent>(
+    `/api/events/${encodeURIComponent(id)}`,
+    { method: "PATCH", body: JSON.stringify(updates) }
+  );
+  return mapApiEvent(data);
+}
+
+export async function apiCancelEvent(id: string): Promise<Event> {
+  const data = await request<ApiEvent>(
+    `/api/events/${encodeURIComponent(id)}/cancel`,
+    { method: "POST" }
+  );
+  return mapApiEvent(data);
+}
+
+export async function apiUpsertRsvp(
+  id: string,
+  input: { status: RsvpStatus; show_on_list?: boolean }
+): Promise<EventRsvp> {
+  const data = await request<ApiRsvp>(
+    `/api/events/${encodeURIComponent(id)}/rsvp`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        status: input.status,
+        show_on_list: input.show_on_list ?? true,
+      }),
+    }
+  );
+  return mapApiRsvp(data);
+}
+
+export async function apiClearRsvp(id: string): Promise<void> {
+  await request<void>(`/api/events/${encodeURIComponent(id)}/rsvp`, {
+    method: "DELETE",
+  });
+}
+
+export async function apiListAttendees(id: string): Promise<EventAttendee[]> {
+  const data = await request<ApiAttendee[]>(
+    `/api/events/${encodeURIComponent(id)}/attendees`
+  );
+  return data.map(mapApiAttendee);
 }
 
 // --- helpers ---------------------------------------------------------------

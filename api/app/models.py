@@ -310,3 +310,73 @@ class Report(Base):
         default=ReportStatus.open,
         nullable=False,
     )
+
+
+class PlaceMode(str, enum.Enum):
+    metro = "metro"
+    virtual = "virtual"
+
+
+class AttendeeListVisibility(str, enum.Enum):
+    public = "public"
+    going_only = "going_only"
+    host_only = "host_only"
+
+
+class RsvpStatus(str, enum.Enum):
+    going = "going"
+    interested = "interested"
+    declined = "declined"
+
+
+class Event(Base):
+    __tablename__ = "events"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    host_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(240), nullable=False)
+    description: Mapped[str | None] = mapped_column(Text, nullable=True)
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
+    ends_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    timezone: Mapped[str] = mapped_column(String(64), default="America/New_York", nullable=False)
+    place_mode: Mapped[PlaceMode] = mapped_column(
+        Enum(PlaceMode, name="place_mode"),
+        nullable=False,
+    )
+    metro_area: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    virtual_url: Mapped[str | None] = mapped_column(String(512), nullable=True)
+    attendee_list_visibility: Mapped[AttendeeListVisibility] = mapped_column(
+        Enum(AttendeeListVisibility, name="attendee_list_visibility"),
+        default=AttendeeListVisibility.going_only,
+        nullable=False,
+    )
+    capacity: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    cancelled: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    host: Mapped[User] = relationship("User", foreign_keys=[host_id])
+    rsvps: Mapped[list[Rsvp]] = relationship(
+        "Rsvp", back_populates="event", cascade="all, delete-orphan"
+    )
+
+
+class Rsvp(Base):
+    __tablename__ = "rsvps"
+    __table_args__ = (UniqueConstraint("event_id", "user_id", name="uq_rsvp_event_user"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    event_id: Mapped[int] = mapped_column(ForeignKey("events.id"), nullable=False, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    status: Mapped[RsvpStatus] = mapped_column(
+        Enum(RsvpStatus, name="rsvp_status"),
+        nullable=False,
+    )
+    show_on_list: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    event: Mapped[Event] = relationship("Event", back_populates="rsvps")
+    user: Mapped[User] = relationship("User", foreign_keys=[user_id])

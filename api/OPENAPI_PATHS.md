@@ -84,6 +84,14 @@
 | GET | `/api/writings/{writing_id}` | Bearer | Visibility enforced |
 | PATCH | `/api/writings/{writing_id}` | Bearer | Author only |
 | DELETE | `/api/writings/{writing_id}` | Bearer | Author only |
+| POST | `/api/events` | Bearer | Create metro/virtual event; auto RSVP going as host |
+| GET | `/api/events` | Bearer | Upcoming non-cancelled; optional `?metro=`; excludes blocked hosts |
+| GET | `/api/events/{event_id}` | Bearer | Detail + `my_rsvp`; `virtual_url` only for host or going |
+| PATCH | `/api/events/{event_id}` | Bearer | Host only |
+| POST | `/api/events/{event_id}/cancel` | Bearer | Host soft-cancel |
+| PUT | `/api/events/{event_id}/rsvp` | Bearer | Upsert `{status, show_on_list?}` going\|interested\|declined |
+| DELETE | `/api/events/{event_id}/rsvp` | Bearer | Clear RSVP (204) |
+| GET | `/api/events/{event_id}/attendees` | Bearer | Filtered by `attendee_list_visibility`; blocks omitted |
 | POST | `/api/moderation/report` | Bearer | post\|user\|group\|writing\|topic |
 | GET | `/api/moderation/reports` | Bearer | Open reports (MVP any authed; TODO admin) |
 | POST | `/api/moderation/posts/{post_id}/hide` | Bearer | MVP any authed |

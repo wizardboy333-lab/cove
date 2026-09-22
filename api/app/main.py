@@ -12,7 +12,7 @@ from sqlalchemy import select
 from app.config import get_settings
 from app.database import Base, SessionLocal, engine
 from app.models import InviteCode
-from app.routers import admin, auth, groups, invites, meta, moderation, posts, profiles, social, writings
+from app.routers import admin, auth, events, groups, invites, meta, moderation, posts, profiles, social, writings
 
 
 SEED_INVITE_CODE = "COVE-BETA-001"
@@ -87,6 +87,7 @@ app.include_router(posts.router)
 app.include_router(groups.router)
 app.include_router(groups.topics_router)
 app.include_router(writings.router)
+app.include_router(events.router)
 app.include_router(moderation.router)
 
 
