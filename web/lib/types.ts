@@ -133,3 +133,31 @@ export type Media = {
   createdAt: string;
   url?: string | null;
 };
+
+
+export type DmConversation = {
+  id: string;
+  otherUserId: string;
+  otherDisplayName: string;
+  createdAt: string;
+  lastMessagePreview?: string | null;
+  lastMessageAt?: string | null;
+};
+
+export type DmMessage = {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  body: string;
+  createdAt: string;
+};
+
+export type ModReport = {
+  id: string;
+  reporterId: string;
+  targetType: string;
+  targetId: string;
+  reason: string;
+  createdAt: string;
+  status: string;
+};

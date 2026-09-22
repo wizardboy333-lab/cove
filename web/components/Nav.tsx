@@ -11,6 +11,7 @@ const links = [
   { href: "/groups", label: "Groups" },
   { href: "/events", label: "Events" },
   { href: "/kinks", label: "Kinks" },
+  { href: "/inbox", label: "Inbox" },
   { href: "/writings", label: "Writings" },
   { href: "/profile", label: "Profile" },
 ];

@@ -11,7 +11,7 @@ Numbered map of the 90-day build plan in [`PRODUCT_ARCHITECTURE.md`](./PRODUCT_A
 | **5** | Days 36–45 | Writings + home feed | Done (thin) |
 | **6** | Days 46–55 | Media — local upload + blur-until-tap | Done (thin / ephemeral disk) |
 | **7** | Days 56–65 | **Events thin slice** — metro/virtual create + RSVP | Done (thin) |
-| **8** | Days 66–75 | DMs + safety queue | Partial (reports API; no DMs) |
+| **8** | Days 66–75 | DMs + safety queue | Done (thin) |
 | **9** | Days 76–90 | Search, polish, soft-launch ops | Partial (open reg live) |
 
 Out of scope until later: street venues, maps, video, billing, native apps, group chat, guest browsing, demographic people search.

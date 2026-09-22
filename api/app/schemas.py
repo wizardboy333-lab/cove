@@ -441,3 +441,33 @@ class MediaOut(BaseModel):
     is_avatar: bool = False
     created_at: datetime
     url: str | None = None  # /api/media/{id}/file
+
+
+# ── DMs ───────────────────────────────────────────────────────────────────────
+
+
+class DmConversationCreate(BaseModel):
+    user_id: int
+
+
+class DmConversationOut(BaseModel):
+    id: int
+    other_user_id: int
+    other_display_name: str
+    created_at: datetime
+    last_message_preview: str | None = None
+    last_message_at: datetime | None = None
+
+
+class DmMessageCreate(BaseModel):
+    body: str = Field(min_length=1, max_length=5000)
+
+
+class DmMessageOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    conversation_id: int
+    sender_id: int
+    body: str
+    created_at: datetime

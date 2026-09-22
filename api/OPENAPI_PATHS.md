@@ -52,6 +52,13 @@
 | POST | `/api/invites` | Bearer | Beta: any authed may mint (prefer admin) |
 | POST | `/api/admin/invites` | Bearer **admin** | Create invite (`InviteCreate` → `InviteOut`, optional `note`) |
 | GET | `/api/admin/invites` | Bearer **admin** | List invites (`use_count` / `max_uses` / `note`) |
+| POST | `/api/dms/conversations` | Bearer | `{user_id}` get-or-create 1:1; blocks + 24h friction |
+| GET | `/api/dms/conversations` | Bearer | My threads |
+| GET | `/api/dms/conversations/{id}/messages` | Bearer | Message history |
+| POST | `/api/dms/conversations/{id}/messages` | Bearer | `{body}` |
+| GET | `/api/admin/reports` | Bearer **admin** | Open report queue |
+| POST | `/api/admin/reports/{id}/resolve` | Bearer **admin** | |
+| POST | `/api/admin/reports/{id}/dismiss` | Bearer **admin** | |
 | GET | `/api/profiles/{user_id}` | optional | Public / limited; blocks → 404 |
 | PATCH | `/api/profiles/me` | Bearer | Update profile (+ optional birth_year) |
 | POST | `/api/media/upload` | Bearer | multipart image; form `nsfw` `writing_id?` `is_avatar?` |

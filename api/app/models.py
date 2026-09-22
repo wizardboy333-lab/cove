@@ -443,3 +443,39 @@ class Media(Base):
     )
 
     owner: Mapped[User] = relationship("User", foreign_keys=[owner_id])
+
+
+class DmConversation(Base):
+    __tablename__ = "dm_conversations"
+    __table_args__ = (
+        UniqueConstraint("user_a_id", "user_b_id", name="uq_dm_pair"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_a_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    user_b_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    messages: Mapped[list[DmMessage]] = relationship(
+        "DmMessage", back_populates="conversation", cascade="all, delete-orphan"
+    )
+
+
+class DmMessage(Base):
+    __tablename__ = "dm_messages"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    conversation_id: Mapped[int] = mapped_column(
+        ForeignKey("dm_conversations.id"), nullable=False, index=True
+    )
+    sender_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    body: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    conversation: Mapped[DmConversation] = relationship(
+        "DmConversation", back_populates="messages"
+    )

@@ -14,7 +14,10 @@ import type {
   Group,
   KinkStance,
   KinkTag,
+  DmConversation,
+  DmMessage,
   Media,
+  ModReport,
   PlaceMode,
   Post,
   RsvpStatus,
@@ -1003,6 +1006,125 @@ export async function apiDeleteMedia(id: string): Promise<void> {
   await request<void>(`/api/media/${encodeURIComponent(id)}`, {
     method: "DELETE",
   });
+}
+
+
+// --- DMs (live) ------------------------------------------------------------
+
+type ApiDmConversation = {
+  id: number | string;
+  other_user_id: number | string;
+  other_display_name: string;
+  created_at: string;
+  last_message_preview?: string | null;
+  last_message_at?: string | null;
+};
+
+type ApiDmMessage = {
+  id: number | string;
+  conversation_id: number | string;
+  sender_id: number | string;
+  body: string;
+  created_at: string;
+};
+
+type ApiReport = {
+  id: number | string;
+  reporter_id: number | string;
+  target_type: string;
+  target_id: number | string;
+  reason: string;
+  created_at: string;
+  status: string;
+};
+
+export function mapApiDmConversation(c: ApiDmConversation): DmConversation {
+  return {
+    id: String(c.id),
+    otherUserId: String(c.other_user_id),
+    otherDisplayName: c.other_display_name,
+    createdAt: isoFrom(c.created_at),
+    lastMessagePreview: c.last_message_preview ?? null,
+    lastMessageAt: c.last_message_at ? isoFrom(c.last_message_at) : null,
+  };
+}
+
+export function mapApiDmMessage(m: ApiDmMessage): DmMessage {
+  return {
+    id: String(m.id),
+    conversationId: String(m.conversation_id),
+    senderId: String(m.sender_id),
+    body: m.body,
+    createdAt: isoFrom(m.created_at),
+  };
+}
+
+export function mapApiReport(r: ApiReport): ModReport {
+  return {
+    id: String(r.id),
+    reporterId: String(r.reporter_id),
+    targetType: r.target_type,
+    targetId: String(r.target_id),
+    reason: r.reason,
+    createdAt: isoFrom(r.created_at),
+    status: r.status,
+  };
+}
+
+export async function apiListDmConversations(): Promise<DmConversation[]> {
+  const data = await request<ApiDmConversation[]>("/api/dms/conversations");
+  return data.map(mapApiDmConversation);
+}
+
+export async function apiStartDm(userId: string): Promise<DmConversation> {
+  const data = await request<ApiDmConversation>("/api/dms/conversations", {
+    method: "POST",
+    body: JSON.stringify({ user_id: Number(userId) }),
+  });
+  return mapApiDmConversation(data);
+}
+
+export async function apiListDmMessages(
+  conversationId: string
+): Promise<DmMessage[]> {
+  const data = await request<ApiDmMessage[]>(
+    `/api/dms/conversations/${encodeURIComponent(conversationId)}/messages`
+  );
+  return data.map(mapApiDmMessage);
+}
+
+export async function apiSendDmMessage(
+  conversationId: string,
+  body: string
+): Promise<DmMessage> {
+  const trimmed = body.trim();
+  if (!trimmed) throw new Error("Message cannot be empty.");
+  const data = await request<ApiDmMessage>(
+    `/api/dms/conversations/${encodeURIComponent(conversationId)}/messages`,
+    { method: "POST", body: JSON.stringify({ body: trimmed }) }
+  );
+  return mapApiDmMessage(data);
+}
+
+export async function apiAdminListReports(): Promise<ModReport[]> {
+  const data = await request<ApiReport[]>("/api/admin/reports");
+  return data.map(mapApiReport);
+}
+
+export async function apiAdminResolveReport(id: string): Promise<ModReport> {
+  const data = await request<ApiReport>(
+    `/api/admin/reports/${encodeURIComponent(id)}/resolve`,
+    { method: "POST" }
+  );
+  return mapApiReport(data);
+}
+
+export async function apiAdminDismissReport(id: string): Promise<ModReport> {
+  const data = await request<ApiReport>(
+    `/api/admin/reports/${encodeURIComponent(id)}/dismiss`,
+    { method: "POST" }
+  );
+  return mapApiReport(data);
 }
 
 // --- helpers ---------------------------------------------------------------

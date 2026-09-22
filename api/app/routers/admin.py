@@ -9,8 +9,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 
 from app.auth import CurrentUser, DbSession
-from app.models import InviteCode, User
-from app.schemas import InviteCreate, InviteOut
+from app.models import InviteCode, Report, ReportStatus, User
+from app.schemas import InviteCreate, InviteOut, ReportOut
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -69,3 +69,81 @@ def admin_list_invites(
     """List all invite codes with use_count / max_uses (admin only)."""
     rows = db.scalars(select(InviteCode).order_by(InviteCode.created_at.desc())).all()
     return [InviteOut.model_validate(r) for r in rows]
+
+
+
+@router.get("/reports", response_model=list[ReportOut])
+def admin_list_reports(
+    db: DbSession,
+    admin: User = Depends(require_admin),
+    status_filter: str = "open",
+) -> list[ReportOut]:
+    """Admin report queue — open reports by default."""
+    stmt = select(Report).order_by(Report.created_at.desc())
+    if status_filter == "open":
+        stmt = stmt.where(Report.status == ReportStatus.open)
+    rows = db.scalars(stmt.limit(200)).all()
+    return [
+        ReportOut(
+            id=r.id,
+            reporter_id=r.reporter_id,
+            target_type=r.target_type.value,
+            target_id=r.target_id,
+            reason=r.reason,
+            created_at=r.created_at,
+            status=r.status.value,
+        )
+        for r in rows
+    ]
+
+
+@router.post("/reports/{report_id}/resolve", response_model=ReportOut)
+def admin_resolve_report(
+    report_id: int,
+    db: DbSession,
+    admin: User = Depends(require_admin),
+) -> ReportOut:
+    report = db.get(Report, report_id)
+    if report is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"detail": "Report not found", "code": "NOT_FOUND"},
+        )
+    report.status = ReportStatus.resolved
+    db.commit()
+    db.refresh(report)
+    return ReportOut(
+        id=report.id,
+        reporter_id=report.reporter_id,
+        target_type=report.target_type.value,
+        target_id=report.target_id,
+        reason=report.reason,
+        created_at=report.created_at,
+        status=report.status.value,
+    )
+
+
+@router.post("/reports/{report_id}/dismiss", response_model=ReportOut)
+def admin_dismiss_report(
+    report_id: int,
+    db: DbSession,
+    admin: User = Depends(require_admin),
+) -> ReportOut:
+    report = db.get(Report, report_id)
+    if report is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={"detail": "Report not found", "code": "NOT_FOUND"},
+        )
+    report.status = ReportStatus.dismissed
+    db.commit()
+    db.refresh(report)
+    return ReportOut(
+        id=report.id,
+        reporter_id=report.reporter_id,
+        target_type=report.target_type.value,
+        target_id=report.target_id,
+        reason=report.reason,
+        created_at=report.created_at,
+        status=report.status.value,
+    )

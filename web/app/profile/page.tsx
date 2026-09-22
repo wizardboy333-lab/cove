@@ -60,7 +60,11 @@ export default function ProfilePage() {
                     {decade}
                   </span>
                 ) : null}
-                {user.isAdmin ? <AdminBadge size="sm" /> : null}
+                {user.isAdmin ? (
+                  <Link href="/admin/reports">
+                    <AdminBadge size="sm" />
+                  </Link>
+                ) : null}
               </div>
             </div>
           </div>
