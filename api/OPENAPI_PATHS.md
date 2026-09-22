@@ -40,6 +40,7 @@
 |--------|------|------|-------|
 | GET | `/` | no | API blurb |
 | GET | `/health` | no | Liveness |
+| GET | `/api/search` | Bearer | `?q=` + `type=`/`types=` groups\|events\|writings\|kinks\|people (prefix name only) |
 | GET | `/docs` | no | Swagger UI |
 | GET | `/openapi.json` | no | OpenAPI schema |
 | GET | `/api/config/public` | no | `{jurisdiction, tos_version, locale, require_invite=false, age_vendor_enabled}` |

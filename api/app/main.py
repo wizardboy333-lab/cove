@@ -13,7 +13,7 @@ from app.config import get_settings
 from app.database import Base, SessionLocal, engine
 from app.kink_seed import seed_kink_tags
 from app.models import InviteCode
-from app.routers import admin, auth, dms, events, groups, invites, kinks, media, meta, moderation, posts, profiles, social, writings
+from app.routers import admin, auth, dms, events, groups, invites, kinks, media, meta, moderation, posts, profiles, search, social, writings
 
 
 SEED_INVITE_CODE = "COVE-BETA-001"
@@ -97,6 +97,7 @@ app.include_router(events.router)
 app.include_router(kinks.router)
 app.include_router(media.router)
 app.include_router(dms.router)
+app.include_router(search.router)
 app.include_router(moderation.router)
 
 

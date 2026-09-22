@@ -48,6 +48,15 @@ export function AppShell({
     <div className="cove-glow min-h-screen bg-cove-ink text-cove-mist">
       <Nav />
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-12">{children}</main>
+      <footer className="mx-auto max-w-3xl px-4 py-6 text-center text-[0.65rem] uppercase tracking-wider text-cove-mist-dim sm:px-6">
+        <a href="/legal/guidelines" className="hover:text-cove-accent">Guidelines</a>
+        <span className="mx-2">·</span>
+        <a href="/legal/tos" className="hover:text-cove-accent">Terms</a>
+        <span className="mx-2">·</span>
+        <a href="/legal/privacy" className="hover:text-cove-accent">Privacy</a>
+        <span className="mx-2">·</span>
+        <span>18+ only</span>
+      </footer>
     </div>
   );
 }

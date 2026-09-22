@@ -161,3 +161,11 @@ export type ModReport = {
   createdAt: string;
   status: string;
 };
+
+
+export type SearchHit = {
+  type: string;
+  id: string;
+  title: string;
+  subtitle?: string | null;
+};

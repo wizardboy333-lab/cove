@@ -18,6 +18,7 @@ import type {
   DmMessage,
   Media,
   ModReport,
+  SearchHit,
   PlaceMode,
   Post,
   RsvpStatus,
@@ -1125,6 +1126,33 @@ export async function apiAdminDismissReport(id: string): Promise<ModReport> {
     { method: "POST" }
   );
   return mapApiReport(data);
+}
+
+
+// --- Search (live) ---------------------------------------------------------
+
+type ApiSearchHit = {
+  type: string;
+  id: number | string;
+  title: string;
+  subtitle?: string | null;
+};
+
+export async function apiSearch(
+  q: string,
+  type?: string
+): Promise<SearchHit[]> {
+  const params = new URLSearchParams({ q: q.trim() });
+  if (type) params.set("type", type);
+  const data = await request<{ q: string; results: ApiSearchHit[] }>(
+    `/api/search?${params}`
+  );
+  return (data.results || []).map((h) => ({
+    type: h.type,
+    id: String(h.id),
+    title: h.title,
+    subtitle: h.subtitle ?? null,
+  }));
 }
 
 // --- helpers ---------------------------------------------------------------
