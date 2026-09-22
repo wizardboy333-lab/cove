@@ -422,3 +422,24 @@ class UserKink(Base):
 
     kink: Mapped[KinkTag] = relationship("KinkTag")
     user: Mapped[User] = relationship("User", foreign_keys=[user_id])
+
+
+class Media(Base):
+    __tablename__ = "media"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    storage_key: Mapped[str] = mapped_column(String(512), nullable=False)
+    content_type: Mapped[str] = mapped_column(String(128), nullable=False)
+    original_filename: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    nsfw: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    blurhash: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    writing_id: Mapped[int | None] = mapped_column(
+        ForeignKey("writings.id"), nullable=True, index=True
+    )
+    is_avatar: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    owner: Mapped[User] = relationship("User", foreign_keys=[owner_id])

@@ -423,3 +423,21 @@ class UserKinkItem(BaseModel):
 
 class UserKinksPut(BaseModel):
     kinks: list[UserKinkItem] = Field(default_factory=list, max_length=200)
+
+
+# ── Media ─────────────────────────────────────────────────────────────────────
+
+
+class MediaOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    owner_id: int
+    content_type: str
+    original_filename: str | None = None
+    nsfw: bool = True
+    blurhash: str | None = None
+    writing_id: int | None = None
+    is_avatar: bool = False
+    created_at: datetime
+    url: str | None = None  # /api/media/{id}/file

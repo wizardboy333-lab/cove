@@ -14,6 +14,7 @@ import type {
   Group,
   KinkStance,
   KinkTag,
+  Media,
   PlaceMode,
   Post,
   RsvpStatus,
@@ -933,6 +934,75 @@ export async function apiGetUserKinks(userId: string): Promise<UserKink[]> {
     `/api/profiles/${encodeURIComponent(userId)}/kinks`
   );
   return data.map(mapApiUserKink);
+}
+
+
+// --- Media (live) ----------------------------------------------------------
+
+type ApiMedia = {
+  id: number | string;
+  owner_id: number | string;
+  content_type: string;
+  original_filename?: string | null;
+  nsfw?: boolean;
+  blurhash?: string | null;
+  writing_id?: number | string | null;
+  is_avatar?: boolean;
+  created_at: string;
+  url?: string | null;
+};
+
+export function mapApiMedia(m: ApiMedia): Media {
+  return {
+    id: String(m.id),
+    ownerId: String(m.owner_id),
+    contentType: m.content_type,
+    originalFilename: m.original_filename ?? null,
+    nsfw: m.nsfw !== false,
+    blurhash: m.blurhash ?? null,
+    writingId: m.writing_id != null ? String(m.writing_id) : null,
+    isAvatar: !!m.is_avatar,
+    createdAt: isoFrom(m.created_at),
+    url: m.url ?? `/api/media/${m.id}/file`,
+  };
+}
+
+export async function apiUploadMedia(input: {
+  file: File;
+  nsfw?: boolean;
+  writingId?: string;
+  isAvatar?: boolean;
+}): Promise<Media> {
+  const token = readStoredToken();
+  if (!token) throw new Error("Sign in required.");
+  const form = new FormData();
+  form.append("file", input.file);
+  form.append("nsfw", String(input.nsfw !== false));
+  if (input.writingId) form.append("writing_id", input.writingId);
+  if (input.isAvatar) form.append("is_avatar", "true");
+  const res = await fetch(`${API_BASE}/api/media/upload`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}` },
+    body: form,
+  });
+  if (!res.ok) {
+    throw new Error(await parseErrorMessage(res));
+  }
+  const data = (await res.json()) as ApiMedia;
+  return mapApiMedia(data);
+}
+
+export async function apiListWritingMedia(writingId: string): Promise<Media[]> {
+  const data = await request<ApiMedia[]>(
+    `/api/media/writing/${encodeURIComponent(writingId)}`
+  );
+  return data.map(mapApiMedia);
+}
+
+export async function apiDeleteMedia(id: string): Promise<void> {
+  await request<void>(`/api/media/${encodeURIComponent(id)}`, {
+    method: "DELETE",
+  });
 }
 
 // --- helpers ---------------------------------------------------------------

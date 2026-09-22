@@ -119,3 +119,17 @@ export type UserKink = {
   stance: KinkStance | string;
   parentId?: string | null;
 };
+
+
+export type Media = {
+  id: string;
+  ownerId: string;
+  contentType: string;
+  originalFilename?: string | null;
+  nsfw: boolean;
+  blurhash?: string | null;
+  writingId?: string | null;
+  isAvatar: boolean;
+  createdAt: string;
+  url?: string | null;
+};

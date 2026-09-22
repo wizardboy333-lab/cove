@@ -49,3 +49,7 @@ build/
 
 # Invite seed output (local)
 **/seed_invites.out.txt
+
+# local media MVP
+api/uploads/
+uploads/

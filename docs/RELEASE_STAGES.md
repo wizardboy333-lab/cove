@@ -9,7 +9,7 @@ Numbered map of the 90-day build plan in [`PRODUCT_ARCHITECTURE.md`](./PRODUCT_A
 | **3** | Days 15–21 | Kinks — taxonomy seed + profile kinks UI | Done (thin) |
 | **4** | Days 22–35 | Groups forum — CRUD, topics, posts, mods | Done (thin) |
 | **5** | Days 36–45 | Writings + home feed | Done (thin) |
-| **6** | Days 46–55 | Media — presigned photos, blur-until-tap | Not started (placeholders only) |
+| **6** | Days 46–55 | Media — local upload + blur-until-tap | Done (thin / ephemeral disk) |
 | **7** | Days 56–65 | **Events thin slice** — metro/virtual create + RSVP | Done (thin) |
 | **8** | Days 66–75 | DMs + safety queue | Partial (reports API; no DMs) |
 | **9** | Days 76–90 | Search, polish, soft-launch ops | Partial (open reg live) |

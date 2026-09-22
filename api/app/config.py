@@ -24,6 +24,7 @@ class Settings(BaseSettings):
     require_invite: bool = False  # open registration — invite-only beta removed
     age_vendor_enabled: bool = False  # feature flag; stub endpoint only
     locale: str = "en-US"
+    media_root: str = "uploads"  # relative to api/ cwd; Render disk is ephemeral
 
     @property
     def cors_origin_list(self) -> list[str]:

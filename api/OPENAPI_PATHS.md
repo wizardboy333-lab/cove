@@ -54,6 +54,11 @@
 | GET | `/api/admin/invites` | Bearer **admin** | List invites (`use_count` / `max_uses` / `note`) |
 | GET | `/api/profiles/{user_id}` | optional | Public / limited; blocks → 404 |
 | PATCH | `/api/profiles/me` | Bearer | Update profile (+ optional birth_year) |
+| POST | `/api/media/upload` | Bearer | multipart image; form `nsfw` `writing_id?` `is_avatar?` |
+| GET | `/api/media/{media_id}` | Bearer | Metadata + url |
+| GET | `/api/media/{media_id}/file` | Bearer | Binary file (auth required) |
+| DELETE | `/api/media/{media_id}` | Bearer | Owner only |
+| GET | `/api/media/writing/{writing_id}` | Bearer | Attachments for a writing |
 | POST | `/api/friends/request` | Bearer | `{user_id}` |
 | POST | `/api/friends/accept` | Bearer | `{user_id}` |
 | POST | `/api/friends/decline` | Bearer | `{user_id}` |
