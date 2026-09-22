@@ -84,6 +84,10 @@
 | GET | `/api/writings/{writing_id}` | Bearer | Visibility enforced |
 | PATCH | `/api/writings/{writing_id}` | Bearer | Author only |
 | DELETE | `/api/writings/{writing_id}` | Bearer | Author only |
+| GET | `/api/kinks` | Bearer | Taxonomy list; optional `?q=` `?category=` `?parent_id=` |
+| GET | `/api/profiles/me/kinks` | Bearer | Current user kink stances |
+| PUT | `/api/profiles/me/kinks` | Bearer | Replace set `{kinks:[{kink_id,stance}]}` into\|curious\|limit |
+| GET | `/api/profiles/{user_id}/kinks` | optional | Visible when profile is; no kink-facet people search |
 | POST | `/api/events` | Bearer | Create metro/virtual event; auto RSVP going as host |
 | GET | `/api/events` | Bearer | Upcoming non-cancelled; optional `?metro=`; excludes blocked hosts |
 | GET | `/api/events/{event_id}` | Bearer | Detail + `my_rsvp`; `virtual_url` only for host or going |

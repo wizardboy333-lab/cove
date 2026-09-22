@@ -99,3 +99,23 @@ export type EventAttendee = {
   displayName: string;
   status: RsvpStatus | string;
 };
+
+
+export type KinkStance = "into" | "curious" | "limit";
+
+export type KinkTag = {
+  id: string;
+  slug: string;
+  name: string;
+  parentId?: string | null;
+  category?: string | null;
+};
+
+export type UserKink = {
+  kinkId: string;
+  slug: string;
+  name: string;
+  category?: string | null;
+  stance: KinkStance | string;
+  parentId?: string | null;
+};

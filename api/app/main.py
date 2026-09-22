@@ -11,8 +11,9 @@ from sqlalchemy import select
 
 from app.config import get_settings
 from app.database import Base, SessionLocal, engine
+from app.kink_seed import seed_kink_tags
 from app.models import InviteCode
-from app.routers import admin, auth, events, groups, invites, meta, moderation, posts, profiles, social, writings
+from app.routers import admin, auth, events, groups, invites, kinks, meta, moderation, posts, profiles, social, writings
 
 
 SEED_INVITE_CODE = "COVE-BETA-001"
@@ -50,6 +51,11 @@ def seed_invite_code() -> None:
 async def lifespan(_app: FastAPI):
     Base.metadata.create_all(bind=engine)
     seed_invite_code()
+    db = SessionLocal()
+    try:
+        seed_kink_tags(db)
+    finally:
+        db.close()
     yield
 
 
@@ -88,6 +94,7 @@ app.include_router(groups.router)
 app.include_router(groups.topics_router)
 app.include_router(writings.router)
 app.include_router(events.router)
+app.include_router(kinks.router)
 app.include_router(moderation.router)
 
 

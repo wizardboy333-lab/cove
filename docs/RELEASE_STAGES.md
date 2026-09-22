@@ -6,7 +6,7 @@ Numbered map of the 90-day build plan in [`PRODUCT_ARCHITECTURE.md`](./PRODUCT_A
 |-------|--------|-------|---------------------|
 | **1** | Days 1–7 | Foundations — auth, 18+ gate, profile basics, deploy | Done (open reg + Render) |
 | **2** | Days 8–14 | Graph & privacy — friends, follow, block/mute | Done (API) |
-| **3** | Days 15–21 | Kinks — taxonomy seed + profile kinks UI | Not started |
+| **3** | Days 15–21 | Kinks — taxonomy seed + profile kinks UI | Done (thin) |
 | **4** | Days 22–35 | Groups forum — CRUD, topics, posts, mods | Done (thin) |
 | **5** | Days 36–45 | Writings + home feed | Done (thin) |
 | **6** | Days 46–55 | Media — presigned photos, blur-until-tap | Not started (placeholders only) |

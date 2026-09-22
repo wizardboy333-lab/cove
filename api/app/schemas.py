@@ -392,3 +392,34 @@ class AttendeeOut(BaseModel):
     user_id: int
     display_name: str
     status: str
+
+
+# ── Kinks ─────────────────────────────────────────────────────────────────────
+
+
+class KinkTagOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    slug: str
+    name: str
+    parent_id: int | None = None
+    category: str | None = None
+
+
+class UserKinkOut(BaseModel):
+    kink_id: int
+    slug: str
+    name: str
+    category: str | None = None
+    stance: str
+    parent_id: int | None = None
+
+
+class UserKinkItem(BaseModel):
+    kink_id: int
+    stance: Literal["into", "curious", "limit"]
+
+
+class UserKinksPut(BaseModel):
+    kinks: list[UserKinkItem] = Field(default_factory=list, max_length=200)

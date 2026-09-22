@@ -74,6 +74,23 @@ export default function ProfilePage() {
             </p>
           </div>
 
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wider text-cove-mist-dim">
+                Kinks
+              </h3>
+              <Link
+                href="/profile/kinks"
+                className="text-xs uppercase tracking-wider text-cove-accent hover:underline"
+              >
+                Edit
+              </Link>
+            </div>
+            <p className="text-sm text-cove-mist-dim">
+              Tag what you&apos;re into, curious about, or mark as a limit.
+            </p>
+          </div>
+
           <div className="border-t border-cove-border pt-4">
             <p className="text-xs text-cove-mist-dim">
               Joined{" "}

@@ -12,11 +12,14 @@ import type {
   EventAttendee,
   EventRsvp,
   Group,
+  KinkStance,
+  KinkTag,
   PlaceMode,
   Post,
   RsvpStatus,
   Topic,
   User,
+  UserKink,
   Writing,
   WritingVisibility,
 } from "./types";
@@ -855,6 +858,81 @@ export async function apiListAttendees(id: string): Promise<EventAttendee[]> {
     `/api/events/${encodeURIComponent(id)}/attendees`
   );
   return data.map(mapApiAttendee);
+}
+
+
+// --- Kinks (live) ----------------------------------------------------------
+
+type ApiKinkTag = {
+  id: number | string;
+  slug: string;
+  name: string;
+  parent_id?: number | string | null;
+  category?: string | null;
+};
+
+type ApiUserKink = {
+  kink_id: number | string;
+  slug: string;
+  name: string;
+  category?: string | null;
+  stance: string;
+  parent_id?: number | string | null;
+};
+
+export function mapApiKinkTag(k: ApiKinkTag): KinkTag {
+  return {
+    id: String(k.id),
+    slug: k.slug,
+    name: k.name,
+    parentId: k.parent_id != null ? String(k.parent_id) : null,
+    category: k.category ?? null,
+  };
+}
+
+export function mapApiUserKink(k: ApiUserKink): UserKink {
+  return {
+    kinkId: String(k.kink_id),
+    slug: k.slug,
+    name: k.name,
+    category: k.category ?? null,
+    stance: k.stance,
+    parentId: k.parent_id != null ? String(k.parent_id) : null,
+  };
+}
+
+export async function apiListKinks(opts?: {
+  q?: string;
+  category?: string;
+}): Promise<KinkTag[]> {
+  const params = new URLSearchParams();
+  if (opts?.q?.trim()) params.set("q", opts.q.trim());
+  if (opts?.category?.trim()) params.set("category", opts.category.trim());
+  const qs = params.toString() ? `?${params}` : "";
+  const data = await request<ApiKinkTag[]>(`/api/kinks${qs}`);
+  return data.map(mapApiKinkTag);
+}
+
+export async function apiGetMyKinks(): Promise<UserKink[]> {
+  const data = await request<ApiUserKink[]>("/api/profiles/me/kinks");
+  return data.map(mapApiUserKink);
+}
+
+export async function apiPutMyKinks(
+  kinks: Array<{ kink_id: number; stance: KinkStance }>
+): Promise<UserKink[]> {
+  const data = await request<ApiUserKink[]>("/api/profiles/me/kinks", {
+    method: "PUT",
+    body: JSON.stringify({ kinks }),
+  });
+  return data.map(mapApiUserKink);
+}
+
+export async function apiGetUserKinks(userId: string): Promise<UserKink[]> {
+  const data = await request<ApiUserKink[]>(
+    `/api/profiles/${encodeURIComponent(userId)}/kinks`
+  );
+  return data.map(mapApiUserKink);
 }
 
 // --- helpers ---------------------------------------------------------------

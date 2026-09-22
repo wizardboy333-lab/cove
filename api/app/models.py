@@ -380,3 +380,45 @@ class Rsvp(Base):
 
     event: Mapped[Event] = relationship("Event", back_populates="rsvps")
     user: Mapped[User] = relationship("User", foreign_keys=[user_id])
+
+
+class KinkStance(str, enum.Enum):
+    into = "into"
+    curious = "curious"
+    limit = "limit"
+
+
+class KinkTag(Base):
+    __tablename__ = "kink_tags"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    slug: Mapped[str] = mapped_column(String(120), unique=True, index=True, nullable=False)
+    name: Mapped[str] = mapped_column(String(120), nullable=False)
+    parent_id: Mapped[int | None] = mapped_column(
+        ForeignKey("kink_tags.id"), nullable=True, index=True
+    )
+    category: Mapped[str | None] = mapped_column(String(64), nullable=True)
+
+    parent: Mapped[KinkTag | None] = relationship(
+        "KinkTag", remote_side="KinkTag.id", back_populates="children"
+    )
+    children: Mapped[list[KinkTag]] = relationship("KinkTag", back_populates="parent")
+
+
+class UserKink(Base):
+    __tablename__ = "user_kinks"
+    __table_args__ = (UniqueConstraint("user_id", "kink_id", name="uq_user_kink"),)
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, index=True)
+    kink_id: Mapped[int] = mapped_column(ForeignKey("kink_tags.id"), nullable=False, index=True)
+    stance: Mapped[KinkStance] = mapped_column(
+        Enum(KinkStance, name="kink_stance"),
+        nullable=False,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
+
+    kink: Mapped[KinkTag] = relationship("KinkTag")
+    user: Mapped[User] = relationship("User", foreign_keys=[user_id])
