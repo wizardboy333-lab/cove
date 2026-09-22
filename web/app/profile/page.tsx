@@ -6,6 +6,7 @@ import { Avatar } from "@/components/Avatar";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { useAuth } from "@/lib/auth-context";
+import { AdminBadge } from "@/components/AdminBadge";
 import { useAge } from "@/lib/age-context";
 
 function decadeLabel(birthYear?: number): string | null {
@@ -59,6 +60,7 @@ export default function ProfilePage() {
                     {decade}
                   </span>
                 ) : null}
+                {user.isAdmin ? <AdminBadge size="sm" /> : null}
               </div>
             </div>
           </div>

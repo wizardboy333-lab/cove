@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "./Button";
+import { AdminBadge } from "./AdminBadge";
 
 const links = [
   { href: "/home", label: "Home" },
@@ -53,6 +54,7 @@ export function Nav() {
           })}
         </nav>
         <div className="flex shrink-0 items-center gap-2">
+          {user?.isAdmin ? <AdminBadge size="sm" showLabel={false} /> : null}
           {user ? (
             <Button
               variant="ghost"

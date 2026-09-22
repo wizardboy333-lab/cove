@@ -8,6 +8,8 @@ export type User = {
   /** Optional decade-style display later (e.g. “40s”). Never full DOB. */
   birth_year?: number;
   is_18_plus?: boolean;
+  /** Site admin — shows cock badge */
+  isAdmin?: boolean;
 };
 
 export type Post = {

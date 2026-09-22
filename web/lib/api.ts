@@ -193,6 +193,7 @@ export function mapApiUser(u: ApiUser): User {
     joinedAt: u.created_at || new Date().toISOString(),
     birth_year: u.birth_year ?? undefined,
     is_18_plus: u.is_18_plus,
+    isAdmin: Boolean(u.is_admin),
   };
 }
 
