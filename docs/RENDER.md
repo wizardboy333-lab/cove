@@ -17,7 +17,7 @@ Blueprint: [`render.yaml`](../render.yaml) — Postgres + `cove-api` + `cove-web
 
 | Service   | Expected URL (may get a random suffix)   |
 |-----------|------------------------------------------|
-| API       | `https://cove-api.onrender.com`          |
+| API       | `https://cove-api-7hwg.onrender.com`          |
 | Web       | `https://cove-web.onrender.com`          |
 
 ### Fix `NEXT_PUBLIC_API_URL` if the API hostname is not exact

@@ -4,7 +4,7 @@
 # Free web services spin down after ~15 min idle (cold start).
 #
 # NEXT_PUBLIC_API_URL is baked at Docker build time. Default assumes service
-# name cove-api → https://cove-api.onrender.com. If Render adds a random
+# name cove-api → https://cove-api-7hwg.onrender.com. If Render adds a random
 # suffix, set NEXT_PUBLIC_API_URL in the cove-web dashboard (or rebuild with
 # the real URL) — see docs/RENDER.md.
 
@@ -45,4 +45,4 @@ services:
     envVars:
       # Browser calls API directly (CORS_ORIGINS=*). Update if hostname differs.
       - key: NEXT_PUBLIC_API_URL
-        value: https://cove-api.onrender.com
+        value: https://cove-api-7hwg.onrender.com
